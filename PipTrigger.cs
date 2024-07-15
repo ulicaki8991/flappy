@@ -1,27 +1,45 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
-public class PipTrigger : MonoBehaviour
+public class PipeController : MonoBehaviour
 {
-    [SerializeField] GM gm;
-    // Start is called before the first frame update
+    public float moveSpeed = 3f; // Speed at which the pipe moves
+    public float destroyTime = 10f; // Time after which the pipe is destroyed
+
+    private Rigidbody rb;
+
     void Start()
     {
-        gm = GameObject.FindGameObjectWithTag("GM").GetComponent<GM>();
+        rb = GetComponent<Rigidbody>();
+
+        // Start destroying the pipe after `destroyTime` seconds
+        Destroy(gameObject, destroyTime);
+
+        // Ignore collisions with objects in the "Floor" layer for all child colliders
+        IgnoreFloorLayerForChildren();
     }
 
-    // Update is called once per frame
-    void Update()
+    void FixedUpdate()
     {
-        
+        // Move the pipe to the left using Rigidbody forces
+        rb.velocity = Vector3.left * moveSpeed;
     }
 
-    private void OnTriggerEnter(Collider other)
+    void IgnoreFloorLayerForChildren()
     {
-        if(other.gameObject.tag == "Player")
+        // Get all child colliders of the pipe
+        Collider[] childColliders = GetComponentsInChildren<Collider>();
+
+        // Ignore collisions with objects in the "Floor" layer for each child collider
+        foreach (Collider childCollider in childColliders)
         {
-            gm.AddScore();
+            if (childCollider.gameObject.tag != "Trigger")
+            {
+                int floorLayer = LayerMask.NameToLayer("Floor");
+                if (floorLayer != -1)
+                {
+                    Physics.IgnoreCollision(childCollider, GameObject.FindWithTag("Floor").GetComponent<Collider>());
+                }
+            }
         }
     }
 }
