@@ -18,6 +18,12 @@ public class GM : MonoBehaviour
     [SerializeField] Text ScorePointsText;
     [SerializeField] Text HighScorePointsText;
 
+    [Header("UI")]
+    [SerializeField] GameObject FaderStart;
+    [SerializeField] GameObject TextStart;
+    [SerializeField] GameObject FaderEnd;
+    [SerializeField] GameObject PanelEnd;
+
     void Start()
     {
         timer = spawnInterval;
@@ -56,12 +62,21 @@ public class GM : MonoBehaviour
 
         if(Input.GetMouseButtonDown(0))
         {
-            if(GameStarted == false)
-             SpawnRandomPipe();
+            if (GameStarted == false)
+            {
+                SpawnRandomPipe();
+                FaderStart.SetActive(false);
+                TextStart.SetActive(false);
+            }
             GameStarted = true;
    
         }
 
+    }
+
+    public void RestartGame ()
+    {
+        Application.LoadLevel(0);
     }
 
     void SpawnRandomPipe()
@@ -84,5 +99,9 @@ public class GM : MonoBehaviour
             PlayerPrefs.SetInt("MaxScore", Points);
             HighScorePointsText.text = "Highscore: " + Points;
         }
+
+        FaderEnd.SetActive(true);
+        PanelEnd.SetActive(true);
+
     }
 }
