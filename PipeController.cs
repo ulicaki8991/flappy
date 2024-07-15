@@ -32,10 +32,13 @@ public class PipeController : MonoBehaviour
         // Ignore collisions with objects in the "Floor" layer for each child collider
         foreach (Collider childCollider in childColliders)
         {
-            int floorLayer = LayerMask.NameToLayer("Floor");
-            if (floorLayer != -1)
+            if (childCollider.gameObject.tag != "Trigger")
             {
-                Physics.IgnoreCollision(childCollider, GameObject.FindWithTag("Floor").GetComponent<Collider>());
+                int floorLayer = LayerMask.NameToLayer("Floor");
+                if (floorLayer != -1)
+                {
+                    Physics.IgnoreCollision(childCollider, GameObject.FindWithTag("Floor").GetComponent<Collider>());
+                }
             }
         }
     }
