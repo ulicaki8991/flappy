@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class GM : MonoBehaviour
 {
@@ -12,10 +13,31 @@ public class GM : MonoBehaviour
     public bool GameStarted = false;
     bool GameEndedBool = false;
 
+    [Header("Points")]
+    [SerializeField] public int Points;
+    [SerializeField] Text ScorePointsText;
+    [SerializeField] Text HighScorePointsText;
+
     void Start()
     {
         timer = spawnInterval;
+
+        if(PlayerPrefs.HasKey("MaxScore"))
+        {
+            HighScorePointsText.text = "Highscore: " + PlayerPrefs.GetInt("MaxScore");
+        }
+        else
+        {
+            PlayerPrefs.SetInt("MaxScore", 0);
+            HighScorePointsText.text = "Highscore: " + 0;
+        }
     
+    }
+
+    public void AddScore ()
+    {
+        Points++;
+        ScorePointsText.text = "Score: " + Points;
     }
 
     void Update()
@@ -34,9 +56,10 @@ public class GM : MonoBehaviour
 
         if(Input.GetMouseButtonDown(0))
         {
-
+            if(GameStarted == false)
+             SpawnRandomPipe();
             GameStarted = true;
-            SpawnRandomPipe();
+   
         }
 
     }
@@ -55,5 +78,11 @@ public class GM : MonoBehaviour
     public void GameEnd ()
     {
         GameEndedBool = true;
+
+        if(PlayerPrefs.GetInt("MaxScore") < Points)
+        {
+            PlayerPrefs.SetInt("MaxScore", Points);
+            HighScorePointsText.text = "Highscore: " + Points;
+        }
     }
 }
