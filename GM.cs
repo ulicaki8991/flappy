@@ -9,21 +9,36 @@ public class GM : MonoBehaviour
     public Transform pipeSpawnPos;
     private float timer;
 
+    public bool GameStarted = false;
+    bool GameEndedBool = false;
+
     void Start()
     {
         timer = spawnInterval;
-        SpawnRandomPipe();
+    
     }
 
     void Update()
     {
-        timer -= Time.deltaTime;
-
-        if (timer <= 0f)
+        if (GameStarted == true && GameEndedBool == false)
         {
-            SpawnRandomPipe();
-            timer = spawnInterval;
+            timer -= Time.deltaTime;
+
+            if (timer <= 0f)
+            {
+                if(GameEndedBool == false)
+                SpawnRandomPipe();
+                timer = spawnInterval;
+            }
         }
+
+        if(Input.GetMouseButtonDown(0))
+        {
+
+            GameStarted = true;
+            SpawnRandomPipe();
+        }
+
     }
 
     void SpawnRandomPipe()
@@ -34,5 +49,11 @@ public class GM : MonoBehaviour
 
         // Spawn the selected pipe prefab
         Instantiate(pipePrefab, pipeSpawnPos.position, Quaternion.identity);
+    }
+
+
+    public void GameEnd ()
+    {
+        GameEndedBool = true;
     }
 }
